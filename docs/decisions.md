@@ -1,0 +1,5 @@
+- Next.js instead of Vite
+- FastAPI instead of Node
+- SQLite for MVP
+- Runtime engine postponed to v2
+- Single-user mode initially
