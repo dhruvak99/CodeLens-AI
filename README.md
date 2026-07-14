@@ -46,7 +46,7 @@ Run the application:
 
 Open:
 
-- Frontend: http://localhost:3000
+- Frontend: http://localhost:3000  (In Incognito Mode)
 - Python API: http://localhost:8000
 - SQL API: http://localhost:8001
 
