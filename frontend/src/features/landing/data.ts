@@ -1,37 +1,43 @@
 import {
   Bot,
   BrainCircuit,
+  Braces,
+  Code2,
+  Database,
   GitBranch,
   Gauge,
+  GraduationCap,
   Route,
+  Rows3,
+  SearchCheck,
   Sparkles,
   Wrench
 } from "lucide-react";
 
 export const navItems = [
   { label: "Features", href: "#features" },
+  { label: "Workspaces", href: "#workspaces" },
   { label: "Architecture", href: "#architecture" },
-  { label: "Docs", href: "#docs" },
-  { label: "GitHub", href: "https://github.com" }
+  { label: "GitHub", href: "https://github.com/dhruvak99/CodeLens-AI" }
 ];
 
 export const features = [
   {
     title: "Semantic Analysis",
     description:
-      "Detect intent, data flow, and logic issues beyond surface-level syntax.",
+      "Understand Python intent, data flow, and logic issues beyond syntax.",
     icon: BrainCircuit
   },
   {
-    title: "Runtime Trace",
+    title: "Runtime Execution",
     description:
-      "Step through execution paths with variable state and line-level context.",
+      "Step through Python execution with variable state and line-level context.",
     icon: Route
   },
   {
-    title: "AI Explanations",
+    title: "AI Explain",
     description:
-      "Turn findings into clear reasoning that helps developers learn faster.",
+      "Turn analyzer findings into clear Python learning guidance.",
     icon: Sparkles
   },
   {
@@ -43,23 +49,93 @@ export const features = [
   {
     title: "Complexity Metrics",
     description:
-      "Surface time, space, and cyclomatic complexity where decisions happen.",
+      "Surface time, space, and cyclomatic complexity as you code.",
     icon: Gauge
   },
   {
-    title: "Interactive Graphs",
+    title: "Semantic Graph",
     description:
       "Map control flow, semantic relationships, and execution dependencies.",
     icon: GitBranch
+  },
+  {
+    title: "Natural Language SQL",
+    description:
+      "Convert learning prompts into validated SQL with schema-aware generation.",
+    icon: Code2
+  },
+  {
+    title: "Dataset Explorer",
+    description:
+      "Browse live tables, rows, and dataset previews before writing queries.",
+    icon: Database
+  },
+  {
+    title: "Schema Browser",
+    description:
+      "Inspect table columns, types, and keys while learning SQL concepts.",
+    icon: Braces
+  },
+  {
+    title: "SQL Validation",
+    description:
+      "Check generated SQL against real tables and columns before execution.",
+    icon: SearchCheck
+  },
+  {
+    title: "Live Query Results",
+    description:
+      "Execute SQL safely and inspect dynamic result tables in the lab.",
+    icon: Rows3
+  },
+  {
+    title: "AI SQL Tutor",
+    description:
+      "Learn each generated query through beginner-friendly Qwen2.5 tutoring.",
+    icon: GraduationCap
   }
 ];
 
-export const architectureSteps = [
-  "Editor",
-  "Analysis Engine",
-  "Semantic Graph",
-  "Findings",
-  "AI Explain"
+export const workspaceCards = [
+  {
+    title: "Python Lab",
+    description:
+      "Learn Python through semantic analysis, runtime visualization, AI explanations, and interactive debugging.",
+    features: [
+      "Semantic Analysis",
+      "Runtime Trace",
+      "AI Explanations",
+      "Suggested Fixes",
+      "Complexity Metrics",
+      "Interactive Semantic Graph"
+    ],
+    button: "Explore Python Lab"
+  },
+  {
+    title: "SQL Lab",
+    description:
+      "Learn SQL by converting natural language into SQL, exploring datasets, validating queries, and understanding every statement with an AI tutor.",
+    features: [
+      "Natural Language -> SQL",
+      "Live Dataset Explorer",
+      "Schema Visualization",
+      "SQL Validation",
+      "Live Query Execution",
+      "AI SQL Tutor (powered by Qwen2.5)"
+    ],
+    button: "Explore SQL Lab"
+  }
+];
+
+export const architectureBranches = [
+  {
+    workspace: "Python Lab",
+    steps: ["Semantic Engine", "Runtime Engine", "Complexity Metrics", "AI Explain"]
+  },
+  {
+    workspace: "SQL Lab",
+    steps: ["SemanticSQL", "SQL Validator", "SQL Execution", "AI SQL Tutor"]
+  }
 ];
 
 export const findings = [
@@ -84,9 +160,16 @@ export const findings = [
 ];
 
 export const demoFindings = [
-  "Guard against empty arrays before entering the loop.",
-  "Add explicit parameter and return annotations.",
-  "Prefer a direct return path after the target match branch."
+  "Semantic Analysis",
+  "Runtime Trace",
+  "AI Explanation"
+];
+
+export const sqlDemoSteps = [
+  "Question: \"Show students with CGPA above 8\"",
+  "Generated SQL",
+  "Execution Result",
+  "AI SQL Tutor Explanation"
 ];
 
 export const codeLines = [
@@ -116,7 +199,7 @@ export const demoCode = `def score_window(values):
         return "review"`;
 
 export const footerLinks = [
-  { label: "GitHub", href: "https://github.com" },
+  { label: "GitHub", href: "https://github.com/dhruvak99/CodeLens-AI" },
   { label: "Documentation", href: "#docs" },
   { label: "Version", href: "#version" }
 ];

@@ -1,0 +1,402 @@
+import unittest
+from unittest.mock import patch
+
+from sqlalchemy import create_engine, text
+
+from app.services.llm_sql_generation_service import LLMSQLGenerationResult, SCHEMA_MISMATCH
+from app.services.query_pipeline import process_semantic_query
+from app.services.sql_validation_service import SQLValidationResult
+
+
+class FakeCacheResult:
+    hit = False
+    similarity_score = 0.0
+    entry = None
+
+
+class FakeSemanticCache:
+    def __init__(self) -> None:
+        self.stored_payloads = []
+
+    def generate_embedding(self, query: str) -> list[float]:
+        return [1.0, 0.0] if "departments" in query.lower() else [0.0, 1.0]
+
+    def search(self, embedding: list[float]) -> FakeCacheResult:
+        return FakeCacheResult()
+
+    def store(self, **kwargs) -> None:
+        self.stored_payloads.append(kwargs)
+
+
+class QueryPipelineTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.history_patcher = patch("app.services.query_pipeline.create_history_record")
+        self.create_history_record_mock = self.history_patcher.start()
+        self.explain_sql_patcher = patch(
+            "app.services.query_pipeline.explain_sql",
+            return_value="## Summary\nTutor explanation",
+        )
+        self.explain_sql_mock = self.explain_sql_patcher.start()
+        self.extract_schema_patcher = patch(
+            "app.services.query_pipeline.extract_schema",
+            return_value={
+                "courses": {"course_id": "INTEGER", "credits": "INTEGER"},
+                "employees": {"employee_id": "INTEGER", "department": "TEXT", "salary": "REAL"},
+                "projects": {"project_id": "INTEGER", "budget": "REAL"},
+            },
+        )
+        self.extract_schema_mock = self.extract_schema_patcher.start()
+
+    def tearDown(self) -> None:
+        self.extract_schema_patcher.stop()
+        self.explain_sql_patcher.stop()
+        self.history_patcher.stop()
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.query_pipeline.execute_query")
+    def test_department_and_salary_queries_have_different_responses(
+        self,
+        execute_query_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        get_cache_mock.return_value = FakeSemanticCache()
+        execute_query_mock.side_effect = [
+            [
+                {"department": "Engineering"},
+                {"department": "Finance"},
+                {"department": "Human Resources"},
+                {"department": "Operations"},
+            ],
+            [
+                {"employee_id": 107, "name": "Michael Brown", "salary": 95000.0},
+                {"employee_id": 104, "name": "Sarah Johnson", "salary": 88000.0},
+            ],
+        ]
+
+        department_response = process_semantic_query("List all departments")
+        salary_response = process_semantic_query("Show employees with salary greater than 50000")
+
+        self.assertEqual(department_response.generation_mode, "Rule")
+        self.assertEqual(salary_response.generation_mode, "Rule")
+        self.assertNotEqual(
+            department_response.generated_sql,
+            salary_response.generated_sql,
+        )
+        self.assertNotEqual(
+            department_response.results,
+            salary_response.results,
+        )
+        self.assertEqual(
+            department_response.results,
+            [
+                {"department": "Engineering"},
+                {"department": "Finance"},
+                {"department": "Human Resources"},
+                {"department": "Operations"},
+            ],
+        )
+        self.assertEqual(department_response.explanation, "## Summary\nTutor explanation")
+        self.assertTrue(
+            all("employee_id" in row for row in salary_response.results)
+        )
+        execute_query_mock.assert_any_call("SELECT DISTINCT department FROM employees;")
+        execute_query_mock.assert_any_call("SELECT * FROM employees WHERE salary > 50000;")
+        generate_sql_with_llm_mock.assert_not_called()
+        self.assertEqual(self.create_history_record_mock.call_count, 2)
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.database_service.engine")
+    def test_rule_path_uses_generation_mode_rule(
+        self,
+        database_engine_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        engine = create_engine("sqlite+pysqlite:///:memory:")
+        with engine.begin() as connection:
+            connection.execute(
+                text(
+                    "CREATE TABLE employees ("
+                    "employee_id INTEGER PRIMARY KEY, "
+                    "name TEXT, "
+                    "department TEXT, "
+                    "salary REAL"
+                    ");"
+                )
+            )
+            connection.execute(
+                text(
+                    "INSERT INTO employees (employee_id, name, department, salary) "
+                    "VALUES (1, 'Sarah Johnson', 'Finance', 88000.0);"
+                )
+            )
+
+        database_engine_mock.connect.side_effect = engine.connect
+        get_cache_mock.return_value = FakeSemanticCache()
+
+        response = process_semantic_query("Show employees from Finance")
+
+        self.assertEqual(response.generation_mode, "Rule")
+        self.assertEqual(response.generated_sql, "SELECT * FROM employees\nWHERE department = 'Finance';")
+        self.assertIsNone(response.corrected_sql)
+        self.assertEqual(response.executed_sql, response.generated_sql)
+        self.assertTrue(response.validation.valid)
+        self.assertEqual(response.validation.errors, [])
+        self.assertEqual(response.rows_returned, 1)
+        self.assertEqual(response.results[0]["department"], "Finance")
+        self.assertEqual(response.explanation, "## Summary\nTutor explanation")
+        generate_sql_with_llm_mock.assert_not_called()
+        self.create_history_record_mock.assert_called_once()
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.database_service.engine")
+    def test_llm_path_uses_generation_mode_llm_and_executes_runtime_table(
+        self,
+        database_engine_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        engine = create_engine("sqlite+pysqlite:///:memory:")
+        with engine.begin() as connection:
+            connection.execute(
+                text(
+                    "CREATE TABLE projects ("
+                    "project_id INTEGER PRIMARY KEY, "
+                    "project_name TEXT, "
+                    "budget REAL"
+                    ");"
+                )
+            )
+            connection.execute(
+                text(
+                    "INSERT INTO projects (project_id, project_name, budget) "
+                    "VALUES (1, 'Semantic Cache Optimization', 125000.0), "
+                    "(2, 'LLM SQL Generation', 185000.0);"
+                )
+            )
+
+        fake_cache = FakeSemanticCache()
+        database_engine_mock.connect.side_effect = engine.connect
+        get_cache_mock.return_value = fake_cache
+        generate_sql_with_llm_mock.return_value = LLMSQLGenerationResult(
+            sql="SELECT AVG(budget) FROM projects;",
+        )
+
+        response = process_semantic_query("Average project budget")
+
+        self.assertEqual(response.generation_mode, "LLM")
+        self.assertEqual(response.generated_sql, "SELECT AVG(budget) FROM projects;")
+        self.assertIsNone(response.corrected_sql)
+        self.assertEqual(response.executed_sql, "SELECT AVG(budget) FROM projects;")
+        self.assertTrue(response.validation.valid)
+        self.assertEqual(response.rows_returned, 1)
+        self.assertEqual(response.results, [{"AVG(budget)": 155000.0}])
+        self.assertEqual(response.explanation, "## Summary\nTutor explanation")
+        self.assertEqual(fake_cache.stored_payloads[0]["response_payload"]["generation_mode"], "LLM")
+        generate_sql_with_llm_mock.assert_called_once_with("Average project budget")
+        self.create_history_record_mock.assert_called_once()
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.query_pipeline.execute_query")
+    @patch("app.services.sql_validation_service.engine")
+    def test_validation_failure_skips_database_execution(
+        self,
+        validation_engine_mock,
+        execute_query_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        engine = create_engine("sqlite+pysqlite:///:memory:")
+        with engine.begin() as connection:
+            connection.execute(
+                text(
+                    "CREATE TABLE employees ("
+                    "employee_id INTEGER PRIMARY KEY, "
+                    "name TEXT"
+                    ");"
+                )
+            )
+
+        fake_cache = FakeSemanticCache()
+        validation_engine_mock.connect.side_effect = engine.connect
+        validation_engine_mock.dialect = engine.dialect
+        get_cache_mock.return_value = fake_cache
+        generate_sql_with_llm_mock.return_value = LLMSQLGenerationResult(
+            sql="SELECT * FROM employeez;",
+        )
+
+        response = process_semantic_query("Show all employeez")
+
+        self.assertEqual(response.generation_mode, "LLM")
+        self.assertEqual(response.generated_sql, "SELECT * FROM employeez;")
+        self.assertIsNone(response.corrected_sql)
+        self.assertIsNone(response.executed_sql)
+        self.assertFalse(response.validation.valid)
+        self.assertEqual(response.validation.errors, ["Table 'employeez' does not exist"])
+        self.assertEqual(response.validation_status, "invalid")
+        self.assertEqual(response.validation_errors, ["Table 'employeez' does not exist"])
+        self.assertEqual(response.rows_returned, 0)
+        self.assertEqual(response.results, [])
+        execute_query_mock.assert_not_called()
+        self.assertEqual(fake_cache.stored_payloads[0]["response_payload"]["validation_errors"], response.validation_errors)
+        self.create_history_record_mock.assert_called_once()
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.query_pipeline.execute_query")
+    def test_schema_mismatch_skips_database_execution_and_cache_store(
+        self,
+        execute_query_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        fake_cache = FakeSemanticCache()
+        get_cache_mock.return_value = fake_cache
+        generate_sql_with_llm_mock.return_value = LLMSQLGenerationResult(sql=SCHEMA_MISMATCH)
+
+        response = process_semantic_query("Show all suppliers")
+
+        self.assertEqual(response.generation_mode, "LLM")
+        self.assertEqual(response.generated_sql, SCHEMA_MISMATCH)
+        self.assertIsNone(response.corrected_sql)
+        self.assertIsNone(response.executed_sql)
+        self.assertFalse(response.validation.valid)
+        self.assertEqual(
+            response.validation.errors,
+            ["Requested table or column does not exist in the current schema."],
+        )
+        self.assertEqual(response.validation_status, "invalid")
+        self.assertEqual(
+            response.validation_errors,
+            ["Requested table or column does not exist in the current schema."],
+        )
+        self.assertEqual(response.rows_returned, 0)
+        self.assertEqual(response.results, [])
+        execute_query_mock.assert_not_called()
+        self.assertEqual(fake_cache.stored_payloads, [])
+        self.create_history_record_mock.assert_called_once()
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.query_pipeline.execute_query")
+    @patch("app.services.query_pipeline.validate_sql")
+    def test_generated_sql_is_preserved_independently_after_validation_failure(
+        self,
+        validate_sql_mock,
+        execute_query_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        get_cache_mock.return_value = FakeSemanticCache()
+        generated_sql = "SELECT age FROM employees;"
+        generate_sql_with_llm_mock.return_value = LLMSQLGenerationResult(sql=generated_sql)
+        validate_sql_mock.return_value = SQLValidationResult(
+            valid=False,
+            errors=["Column 'age' does not exist in table 'employees'"],
+        )
+
+        response = process_semantic_query("Show employee age")
+
+        self.assertEqual(response.generated_sql, generated_sql)
+        self.assertIsNone(response.corrected_sql)
+        self.assertIsNone(response.executed_sql)
+        self.assertEqual(
+            response.validation.model_dump(),
+            {
+                "valid": False,
+                "errors": ["Column 'age' does not exist in table 'employees'"],
+            },
+        )
+        self.assertEqual(response.validation_errors, response.validation.errors)
+        execute_query_mock.assert_not_called()
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_rules")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.query_pipeline.execute_query")
+    @patch("app.services.query_pipeline.validate_sql")
+    def test_learning_mode_uses_selected_table_llm_context_and_skips_rules(
+        self,
+        validate_sql_mock,
+        execute_query_mock,
+        generate_sql_with_llm_mock,
+        generate_sql_with_rules_mock,
+        get_cache_mock,
+    ) -> None:
+        fake_cache = FakeSemanticCache()
+        get_cache_mock.return_value = fake_cache
+        generate_sql_with_llm_mock.return_value = LLMSQLGenerationResult(
+            sql="SELECT * FROM courses ORDER BY credits DESC LIMIT 1;"
+        )
+        validate_sql_mock.return_value = SQLValidationResult(valid=True, errors=[])
+        execute_query_mock.return_value = [{"course_id": 1, "credits": 4}]
+
+        response = process_semantic_query(
+            "Show the course with highest credits",
+            selected_table="courses",
+            mode="learning",
+        )
+
+        generate_sql_with_rules_mock.assert_not_called()
+        generate_sql_with_llm_mock.assert_called_once_with(
+            "Show the course with highest credits",
+            selected_table="courses",
+            mode="learning",
+        )
+        validate_sql_mock.assert_called_once_with(
+            "SELECT * FROM courses ORDER BY credits DESC LIMIT 1;",
+            allowed_tables={"courses"},
+        )
+        self.assertEqual(response.generated_sql, "SELECT * FROM courses ORDER BY credits DESC LIMIT 1;")
+        self.assertEqual(response.results, [{"course_id": 1, "credits": 4}])
+        self.assertEqual(response.explanation, "## Summary\nTutor explanation")
+        self.assertIn("selected_table=courses", fake_cache.stored_payloads[0]["query"])
+
+    @patch("app.services.query_pipeline.get_semantic_cache_service")
+    @patch("app.services.query_pipeline.generate_sql_with_llm")
+    @patch("app.services.query_pipeline.execute_query")
+    @patch("app.services.query_pipeline.validate_sql")
+    def test_learning_mode_retries_once_after_validation_failure(
+        self,
+        validate_sql_mock,
+        execute_query_mock,
+        generate_sql_with_llm_mock,
+        get_cache_mock,
+    ) -> None:
+        get_cache_mock.return_value = FakeSemanticCache()
+        generate_sql_with_llm_mock.side_effect = [
+            LLMSQLGenerationResult(sql="SELECT credits_total FROM courses;"),
+            LLMSQLGenerationResult(sql="SELECT credits FROM courses;"),
+        ]
+        validate_sql_mock.side_effect = [
+            SQLValidationResult(
+                valid=False,
+                errors=["Column 'credits_total' does not exist in table 'courses'"],
+            ),
+            SQLValidationResult(valid=True, errors=[]),
+        ]
+        execute_query_mock.return_value = [{"credits": 4}]
+
+        response = process_semantic_query(
+            "Show course credits",
+            selected_table="courses",
+            mode="learning",
+        )
+
+        self.assertEqual(generate_sql_with_llm_mock.call_count, 2)
+        self.assertEqual(
+            generate_sql_with_llm_mock.call_args.kwargs["retry_validation_errors"],
+            ["Column 'credits_total' does not exist in table 'courses'"],
+        )
+        self.assertEqual(response.generated_sql, "SELECT credits FROM courses;")
+        self.assertTrue(response.validation.valid)
+        execute_query_mock.assert_called_once_with("SELECT credits FROM courses;")
+
+
+if __name__ == "__main__":
+    unittest.main()

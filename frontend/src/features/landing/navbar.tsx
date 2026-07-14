@@ -11,7 +11,7 @@ export function Navbar() {
       initial={{ y: -16, opacity: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
         <a className="flex items-center gap-3" href="#top" aria-label="CodeLens AI">
           <span className="grid size-9 place-items-center rounded-xl border border-primary/40 bg-primary/10 text-primary shadow-[0_0_30px_rgba(124,58,237,0.28)]">
             <LogoIcon className="size-5" />
@@ -21,7 +21,7 @@ export function Navbar() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+        <nav className="ml-auto hidden items-center gap-1 md:flex" aria-label="Main">
           {navItems.map((item) => (
             <a
               className="rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-white/[0.05] hover:text-white"
@@ -40,7 +40,6 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden w-[140px] md:block" aria-hidden="true" />
       </div>
       <nav
         aria-label="Mobile main"

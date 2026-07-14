@@ -16,7 +16,7 @@ export function FeaturesSection() {
         <div className="mb-10 max-w-2xl">
           <p className="mb-3 text-sm font-medium text-secondary">Features</p>
           <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Built for understanding, debugging, and improving code.
+            Built for Python understanding and SQL fluency.
           </h2>
         </div>
 

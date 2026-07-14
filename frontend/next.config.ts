@@ -1,11 +1,18 @@
 import type { NextConfig } from "next";
 
-const proxiedBackendEndpoints = ["/analyze", "/apply-fix", "/explain", "/runtime"];
+const proxiedBackendEndpoints = [
+  "/analyze",
+  "/apply-fix",
+  "/explain",
+  "/runtime",
+  "/metrics"
+];
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   async rewrites() {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiBaseUrl =
+      process.env.NEXT_PUBLIC_CODELENS_API ?? process.env.NEXT_PUBLIC_API_BASE_URL;
 
     if (apiBaseUrl) {
       return [];

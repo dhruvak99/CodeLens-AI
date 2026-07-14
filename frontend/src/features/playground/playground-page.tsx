@@ -13,10 +13,33 @@ import { RuntimePanel } from "@/features/playground/components/runtime-panel";
 import { SemanticGraphPanel } from "@/features/playground/components/semantic-graph-panel";
 import { sampleCode } from "@/features/playground/data";
 import { useAnalyzeCode } from "@/features/playground/use-analyze-code";
+import { SqlLearningPage } from "@/features/sql-learning/sql-learning-page";
+import type { WorkspaceId } from "@/features/sql-learning/components/workspace-selector";
 import { applyFix, explainFinding } from "@/lib/api/client";
 import type { AnalysisError, ExplainResponse, Finding } from "@/lib/api/contracts";
 
-export function PlaygroundPage() {
+type PlaygroundPageProps = {
+  initialWorkspace?: WorkspaceId;
+};
+
+export function PlaygroundPage({
+  initialWorkspace = "python"
+}: PlaygroundPageProps) {
+  const [activeWorkspace, setActiveWorkspace] =
+    useState<WorkspaceId>(initialWorkspace);
+
+  return (
+    <main className="min-h-screen bg-background text-foreground">
+      <PlaygroundNavbar
+        activeWorkspace={activeWorkspace}
+        onWorkspaceChange={setActiveWorkspace}
+      />
+      {activeWorkspace === "python" ? <PythonLearningWorkspace /> : <SqlLearningPage />}
+    </main>
+  );
+}
+
+function PythonLearningWorkspace() {
   const [code, setCode] = useState(sampleCode);
   const [focusTarget, setFocusTarget] = useState<{
     line: number;
@@ -117,8 +140,7 @@ export function PlaygroundPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <PlaygroundNavbar fileName="binary_search.py" />
+    <>
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="mx-auto flex max-w-[1800px] flex-col gap-3 p-3 sm:p-4 lg:p-5"
@@ -192,6 +214,6 @@ export function PlaygroundPage() {
         isOpen={explanationOpen}
         onClose={() => setExplanationOpen(false)}
       />
-    </main>
+    </>
   );
 }

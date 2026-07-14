@@ -12,7 +12,9 @@ import type {
 } from "@/lib/api/contracts";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+  process.env.NEXT_PUBLIC_CODELENS_API ??
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  "";
 
 async function postJson<TRequest, TResponse>(
   path: string,

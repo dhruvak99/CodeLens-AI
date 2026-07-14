@@ -2,22 +2,28 @@
 
 import { useEffect, useState } from "react";
 import {
-  ChevronDown,
   Moon,
-  Save,
-  Settings,
   SlidersHorizontal,
   Sun
 } from "lucide-react";
 import Link from "next/link";
 
+import {
+  WorkspaceSelector,
+  type WorkspaceId
+} from "@/features/sql-learning/components/workspace-selector";
+
 type PlaygroundNavbarProps = {
-  fileName: string;
+  activeWorkspace: WorkspaceId;
+  onWorkspaceChange: (workspace: WorkspaceId) => void;
 };
 
 type ThemeMode = "dark" | "light";
 
-export function PlaygroundNavbar({ fileName }: PlaygroundNavbarProps) {
+export function PlaygroundNavbar({
+  activeWorkspace,
+  onWorkspaceChange
+}: PlaygroundNavbarProps) {
   const [theme, setTheme] = useState<ThemeMode>("dark");
 
   useEffect(() => {
@@ -55,11 +61,11 @@ export function PlaygroundNavbar({ fileName }: PlaygroundNavbarProps) {
         </Link>
 
         <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
-          <button className="inline-flex max-w-[280px] items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 font-mono text-xs text-slate-200">
-            <span className="size-2 rounded-full bg-amber-400" />
-            <span className="truncate">{fileName}</span>
-            <ChevronDown className="size-4 text-slate-500" />
-          </button>
+          <WorkspaceSelector
+            activeWorkspace={activeWorkspace}
+            className="max-w-[320px]"
+            onWorkspaceChange={onWorkspaceChange}
+          />
         </div>
 
         <div className="flex items-center gap-2">
@@ -72,25 +78,14 @@ export function PlaygroundNavbar({ fileName }: PlaygroundNavbarProps) {
           >
             <ThemeIcon className="size-4" />
           </button>
-          <button
-            className="hidden h-10 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 text-sm text-slate-300 transition hover:bg-white/[0.08] sm:inline-flex"
-            type="button"
-          >
-            <Save className="size-4" />
-            Save
-          </button>
-          <button
-            className="grid size-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-slate-300 transition hover:bg-white/[0.08]"
-            aria-label="Settings"
-            type="button"
-          >
-            <Settings className="size-4" />
-          </button>
         </div>
       </div>
       <div className="flex items-center justify-between border-t border-white/[0.06] px-4 py-2 md:hidden">
-        <span className="truncate font-mono text-xs text-slate-300">{fileName}</span>
-        <span className="text-xs text-emerald-300">Python</span>
+        <WorkspaceSelector
+          activeWorkspace={activeWorkspace}
+          className="w-full justify-between"
+          onWorkspaceChange={onWorkspaceChange}
+        />
       </div>
     </header>
   );

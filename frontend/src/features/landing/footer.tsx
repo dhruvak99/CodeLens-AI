@@ -7,7 +7,14 @@ export function Footer() {
       id="version"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-5 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-        <p>© 2026 CodeLens AI. All rights reserved.</p>
+        <div>
+          <p className="font-semibold text-slate-300">CodeLens AI</p>
+          <p className="mt-2 max-w-xl leading-6">
+            An AI-powered educational platform for learning Python and SQL
+            through interactive analysis, execution, and intelligent tutoring.
+          </p>
+          <p className="mt-3">© 2026 CodeLens AI. All rights reserved.</p>
+        </div>
         <div className="flex flex-wrap items-center gap-4">
           {footerLinks.map((link) => (
             <a

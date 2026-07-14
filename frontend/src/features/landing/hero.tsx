@@ -2,13 +2,12 @@ import { ArrowRight, GitBranch, PlayCircle } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { HeroVisual } from "@/features/landing/hero-visual";
 import { MotionDiv, MotionSection } from "@/features/landing/motion";
 
 export function Hero() {
   return (
     <MotionSection
-      className="relative overflow-hidden px-4 pb-16 pt-32 sm:px-6 lg:px-8"
+      className="relative overflow-hidden px-4 pb-24 pt-32 sm:px-6 lg:px-8"
       id="top"
     >
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:80px_80px] opacity-30" />
@@ -23,19 +22,19 @@ export function Hero() {
         >
           <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-sm text-slate-300">
             <GitBranch className="size-4 text-secondary" />
-            Real-time semantic code intelligence
+            Python and SQL learning workspaces
           </div>
-          <h1 className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Understand Code Beyond Syntax.
+          <h1 className="text-balance text-5xl font-semibold leading-[1.12] tracking-tight text-white sm:text-6xl sm:leading-[1.1] lg:whitespace-nowrap lg:text-7xl lg:leading-[1.08]">
+            Learn Programming with AI.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-8 text-slate-300">
-            Real-time semantic analysis, execution visualization, and
-            AI-powered code intelligence.
+            Master Python programming and SQL through interactive analysis,
+            execution, visualization, and AI-powered tutoring.
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild size="lg">
-              <Link href="/playground">
-                Open Playground
+              <Link href="/playground?workspace=python">
+                Get Started
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
@@ -47,10 +46,6 @@ export function Hero() {
             </Button>
           </div>
         </MotionDiv>
-
-        <div className="mt-16">
-          <HeroVisual />
-        </div>
       </div>
     </MotionSection>
   );
