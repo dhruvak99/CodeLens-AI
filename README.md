@@ -1,25 +1,81 @@
-# CodeLens AI
+# 🚀 CodeLens AI
 
-CodeLens AI is an AI-powered learning platform with two workspaces:
+**AI-Powered Programming & Database Learning Platform**
 
-- **Python Lab** for semantic analysis, runtime tracing, complexity metrics, suggested fixes, and AI explanations.
-- **SQL Lab** for natural-language SQL generation, schema exploration, SQL validation, live query execution, and AI tutoring.
+CodeLens AI is an AI-powered learning platform that helps students master Python programming and SQL through interactive analysis, visualization, and intelligent tutoring.
+
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![License](https://img.shields.io/github/license/dhruvak99/CodeLens-AI?style=for-the-badge)
+
+## About
+
+CodeLens AI combines deterministic program analysis with AI-powered explanations to make programming concepts easier to understand, debug, and explore.
+
+The platform includes two learning environments:
+
+- **Python Lab** for code analysis, runtime visualization, complexity metrics, fixes, and AI explanations.
+- **SQL Lab** for schema-aware SQL generation, validation, execution, and tutoring.
+
+## Preview
+
+### Landing Page
+
+![CodeLens AI Landing Page](docs/screenshots/landing-page.png)
+
+### Labs
+
+| Python Lab | SQL Lab |
+| --- | --- |
+| ![Python Lab](docs/screenshots/python-lab.png) | ![SQL Lab](docs/screenshots/sql-lab.png) |
 
 ## Features
 
-- Python semantic analysis and findings
-- Safe Python runtime visualization
-- Complexity and maintainability metrics
-- Deterministic code fixes
-- SemanticSQL-backed SQL learning workflow
-- Dedicated SQL Tutor explanations through Ollama
+### 🐍 Python Lab
+
+- Static Semantic Analysis
+- Runtime Visualization
+- Complexity Metrics
+- AI Code Explanation
+- Suggested Code Fixes
+- Interactive Learning
+
+### 🗄 SQL Lab
+
+- Natural Language → SQL
+- Schema-aware SQL Generation
+- SQL Validation
+- SQL Execution
+- AI SQL Tutor
+- Dataset Explorer
+- Result Visualization
 
 ## Technology Stack
 
-- **Frontend:** Next.js, TypeScript, Tailwind CSS, React Query, Monaco Editor, React Flow
-- **Python Backend:** FastAPI, Pydantic, NetworkX
-- **SQL Backend:** FastAPI, SQLAlchemy, SQLite, sqlglot, Ollama
-- **AI Runtime:** Ollama models `llama3.1` and `qwen2.5:7b`
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js 15, TypeScript, Tailwind CSS, React Query, Monaco Editor, React Flow |
+| Backend | FastAPI, Pydantic, NetworkX, Python 3.11+ |
+| SQL Engine | SemanticSQL, FastAPI, SQLAlchemy, sqlglot |
+| AI Runtime | Ollama |
+| AI Models | `qwen3:4b`, `llama3.1:8b`, `qwen2.5:7b` |
+| Database | SQLite |
+
+## Project Structure
+
+```text
+CodeLens-AI/
+├── backend/          # Python Lab API, analyzer, runtime, AI explanations
+├── sql_backend/      # SQL Lab API, SQL generation, validation, tutoring
+├── frontend/         # Next.js application
+├── setup.sh          # One-time local setup helper
+├── run.sh            # Starts local development services
+├── stop.sh           # Stops services started by run.sh
+├── status.sh         # Shows local service status
+└── README.md
+```
 
 ## Quick Start
 
@@ -44,55 +100,60 @@ Run the application:
 ./run.sh
 ```
 
-Open:
-
-- Frontend: http://localhost:3000  (In Incognito Mode)
-- Python API: http://localhost:8000
-- SQL API: http://localhost:8001
-
-Stop managed services:
+Stop the application:
 
 ```bash
 ./stop.sh
 ```
 
-Check status:
+Check service status:
 
 ```bash
 ./status.sh
 ```
 
+Open the app at [http://localhost:3000](http://localhost:3000).
+
 ## Manual Setup
 
-Python backend:
+If you do not want to use the helper scripts, you can manually start each service:
 
-```bash
-cd backend
-python3 -m venv .venv
-.venv/bin/python -m pip install -e .
-.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-```
+- **Backend:** create `backend/.venv`, install backend dependencies, then run FastAPI on port `8000`.
+- **SQL Backend:** create `sql_backend/.venv`, install SQL backend dependencies, then run FastAPI on port `8001`.
+- **Frontend:** run `npm install` inside `frontend/`, then start Next.js on port `3000`.
 
-SQL backend:
+## AI Models
 
-```bash
-cd sql_backend
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001
-```
+| Purpose | Model |
+| --- | --- |
+| Python code explanations | `qwen3:4b` |
+| SQL generation | `llama3.1:8b` |
+| SQL tutoring explanations | `qwen2.5:7b` |
 
-Frontend:
+## Roadmap
 
-```bash
-cd frontend
-npm install
-npm run dev -- --hostname 127.0.0.1 --port 3000
-```
+### Completed
 
-Ollama models:
+- [x] Python Lab
+- [x] SQL Lab
+- [x] AI SQL Tutor
+- [x] Runtime Visualization
+- [x] Schema-aware SQL Generation
 
-```bash
-ollama pull llama3.1
-ollama pull qwen2.5:7b
-```
+### Planned
+
+- [ ] User Authentication
+- [ ] Progress Tracking
+- [ ] Learning Dashboard
+- [ ] PostgreSQL Support
+- [ ] Additional Programming Languages
+- [ ] Docker Support
+- [ ] Cloud Deployment
+
+## Contributing
+
+Contributions are welcome. If you want to improve CodeLens AI, open an issue, propose an enhancement, or submit a pull request with a focused change.
+
+## License
+
+This project is licensed under the terms described in the repository [LICENSE](LICENSE) file.
