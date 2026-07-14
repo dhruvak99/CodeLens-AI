@@ -112,7 +112,13 @@ Check service status:
 ./status.sh
 ```
 
-Open the app at [http://localhost:3000](http://localhost:3000).
+Open the application:
+
+```text
+http://localhost:3000
+```
+
+> **Note:** For the best experience, open CodeLens AI in an **Incognito/Private browsing window**. This avoids browser extension interference and cached editor state that can occasionally affect the Monaco editor.
 
 ## Manual Setup
 
