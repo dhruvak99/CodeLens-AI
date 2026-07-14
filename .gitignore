@@ -7,6 +7,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .venv/
+backend/.venv/
+sql_backend/.venv/
 env/
 
 # Node
@@ -23,6 +25,10 @@ out/
 
 # Logs
 *.log
+
+# Managed process files
+.pids/
+*.pid
 
 # Environment
 .env
