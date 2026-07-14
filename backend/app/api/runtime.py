@@ -10,7 +10,10 @@ router = APIRouter(tags=["Runtime"])
     "/runtime",
     response_model=RuntimeResponse,
     summary="Get runtime trace",
-    description="Runtime execution is disabled in v1 and returns an empty trace.",
+    description=(
+        "Safely interpret a restricted Python AST subset and return execution "
+        "steps, captured output, or a structured runtime error."
+    ),
 )
 def get_runtime_trace(request: RuntimeRequest) -> RuntimeResponse:
     return runtime_service.get_runtime_trace(request)

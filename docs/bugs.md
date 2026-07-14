@@ -47,7 +47,7 @@ Improve scope handling for comprehensions and annotation contexts.
 ## Bug
 Date: 2026-07-01
 Severity: High
-Status: Fix Before Demo
+Status: Fixed
 
 Description:
 Loop iterator variables are not added to the symbol table.
@@ -65,3 +65,8 @@ Actual:
 
 Recommendation:
 Register ast.For.target as a variable definition in the semantic extractor.
+
+Resolution:
+Loop targets are now registered as semantic variables and symbols before loop
+analysis runs. Regression tests cover simple loop targets, tuple unpacking, and
+nested loops.

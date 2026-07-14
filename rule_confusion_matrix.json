@@ -1,0 +1,72 @@
+[
+  {
+    "expected": "BinarySearchLogicError",
+    "predicted": "BinarySearchLogicError",
+    "count": 50
+  },
+  {
+    "expected": "BinarySearchLogicError",
+    "predicted": "NoFinding",
+    "count": 50
+  },
+  {
+    "expected": "DangerousImport",
+    "predicted": "DangerousImport",
+    "count": 50
+  },
+  {
+    "expected": "InfiniteLoop",
+    "predicted": "InfiniteLoop",
+    "count": 25
+  },
+  {
+    "expected": "InfiniteLoop",
+    "predicted": "NoFinding",
+    "count": 75
+  },
+  {
+    "expected": "MissingBaseCase",
+    "predicted": "MissingBaseCase",
+    "count": 100
+  },
+  {
+    "expected": "MissingReturn",
+    "predicted": "MissingReturn",
+    "count": 100
+  },
+  {
+    "expected": "MissingReturn",
+    "predicted": "UnusedVariable",
+    "count": 33
+  },
+  {
+    "expected": "NoFinding",
+    "predicted": "NoFinding",
+    "count": 160
+  },
+  {
+    "expected": "NoFinding",
+    "predicted": "UnusedVariable",
+    "count": 40
+  },
+  {
+    "expected": "ShadowedVariable",
+    "predicted": "ShadowedVariable",
+    "count": 50
+  },
+  {
+    "expected": "UndefinedVariable",
+    "predicted": "UndefinedVariable",
+    "count": 100
+  },
+  {
+    "expected": "UnreachableCode",
+    "predicted": "UnreachableCode",
+    "count": 100
+  },
+  {
+    "expected": "UnusedVariable",
+    "predicted": "UnusedVariable",
+    "count": 100
+  }
+]

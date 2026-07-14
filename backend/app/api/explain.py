@@ -10,7 +10,10 @@ router = APIRouter(tags=["Explanation"])
     "/explain",
     response_model=ExplainResponse,
     summary="Explain a finding",
-    description="Returns a mock explanation for the selected finding identifier.",
+    description=(
+        "Uses local Ollama to explain existing analyzer output. The AI layer "
+        "does not detect bugs, calculate complexity, or decide fixes."
+    ),
 )
 def explain_finding(request: ExplainRequest) -> ExplainResponse:
     return explain_service.explain(request)

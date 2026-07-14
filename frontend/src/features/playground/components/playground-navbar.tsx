@@ -1,28 +1,47 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   ChevronDown,
   Moon,
-  Play,
   Save,
   Settings,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Sun
 } from "lucide-react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-
 type PlaygroundNavbarProps = {
   fileName: string;
-  isRunning: boolean;
-  onRun: () => void;
 };
 
-export function PlaygroundNavbar({
-  fileName,
-  isRunning,
-  onRun
-}: PlaygroundNavbarProps) {
+type ThemeMode = "dark" | "light";
+
+export function PlaygroundNavbar({ fileName }: PlaygroundNavbarProps) {
+  const [theme, setTheme] = useState<ThemeMode>("dark");
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem("codelens-theme");
+    const initialTheme: ThemeMode = savedTheme === "light" ? "light" : "dark";
+
+    setTheme(initialTheme);
+    document.documentElement.classList.toggle("light", initialTheme === "light");
+    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    document.documentElement.style.colorScheme = initialTheme;
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme: ThemeMode = theme === "dark" ? "light" : "dark";
+
+    setTheme(nextTheme);
+    window.localStorage.setItem("codelens-theme", nextTheme);
+    document.documentElement.classList.toggle("light", nextTheme === "light");
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    document.documentElement.style.colorScheme = nextTheme;
+  };
+
+  const ThemeIcon = theme === "dark" ? Moon : Sun;
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-background/90 backdrop-blur-xl">
       <div className="flex h-16 items-center justify-between gap-3 px-4 lg:px-6">
@@ -46,10 +65,12 @@ export function PlaygroundNavbar({
         <div className="flex items-center gap-2">
           <button
             className="grid size-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-slate-300 transition hover:bg-white/[0.08]"
-            aria-label="Theme toggle placeholder"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+            onClick={toggleTheme}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
             type="button"
           >
-            <Moon className="size-4" />
+            <ThemeIcon className="size-4" />
           </button>
           <button
             className="hidden h-10 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 text-sm text-slate-300 transition hover:bg-white/[0.08] sm:inline-flex"
@@ -58,10 +79,6 @@ export function PlaygroundNavbar({
             <Save className="size-4" />
             Save
           </button>
-          <Button onClick={onRun} size="sm" type="button">
-            <Play className="size-4" />
-            {isRunning ? "Running..." : "Run"}
-          </Button>
           <button
             className="grid size-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-slate-300 transition hover:bg-white/[0.08]"
             aria-label="Settings"

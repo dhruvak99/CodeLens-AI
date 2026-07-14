@@ -11,8 +11,8 @@ router = APIRouter(tags=["Fixes"])
     response_model=ApplyFixResponse,
     summary="Apply a suggested fix",
     description=(
-        "Returns the submitted code unchanged with applied=false. Real code action "
-        "application is intentionally not implemented yet."
+        "Applies deterministic rule-based code actions when the requested finding "
+        "still matches the submitted code."
     ),
 )
 def apply_fix(request: ApplyFixRequest) -> ApplyFixResponse:

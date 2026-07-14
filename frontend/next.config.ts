@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const proxiedBackendEndpoints = ["/analyze", "/apply-fix", "/explain", "/runtime"];
+
 const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   async rewrites() {
@@ -11,13 +13,12 @@ const nextConfig: NextConfig = {
 
     const proxyTarget =
       process.env.CODELENS_API_PROXY_TARGET ?? "http://localhost:8000";
+    const normalizedProxyTarget = proxyTarget.replace(/\/$/, "");
 
-    return [
-      {
-        source: "/analyze",
-        destination: `${proxyTarget.replace(/\/$/, "")}/analyze`
-      }
-    ];
+    return proxiedBackendEndpoints.map((endpoint) => ({
+      source: endpoint,
+      destination: `${normalizedProxyTarget}${endpoint}`
+    }));
   }
 };
 

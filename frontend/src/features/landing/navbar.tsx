@@ -1,7 +1,5 @@
-import { ArrowRight, Github } from "lucide-react";
-import Link from "next/link";
+import { Github } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { logoIcon as LogoIcon, navItems } from "@/features/landing/data";
 import { MotionHeader } from "@/features/landing/motion";
 
@@ -42,12 +40,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <Button asChild size="sm">
-          <Link href="/playground">
-            Open Playground
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
+        <div className="hidden w-[140px] md:block" aria-hidden="true" />
       </div>
       <nav
         aria-label="Mobile main"

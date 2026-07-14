@@ -22,6 +22,18 @@ Demonstrates:
 - Symbol table generation
 - Scope resolution
 - Semantic analysis
+- Deterministic Apply Fix
+
+## Apply Fix
+
+Click `Apply Fix` on the finding.
+
+Expected updated code:
+
+```python
+x = None
+print(x)
+```
 
 ---
 
@@ -46,6 +58,20 @@ Demonstrates:
 - Loop analysis
 - Variable update tracking
 - Rule engine
+- Deterministic Apply Fix
+
+## Apply Fix
+
+Click `Apply Fix` on the finding.
+
+Expected updated code:
+
+```python
+x = 10
+
+while x > 0:
+    x -= 1
+```
 
 ---
 
@@ -91,6 +117,20 @@ Demonstrates:
 - Recursive function detection
 - Semantic graph generation
 - Rule engine
+- Deterministic Apply Fix
+
+## Apply Fix
+
+Click `Apply Fix` on the finding.
+
+Expected updated code:
+
+```python
+def recurse(n):
+    if n <= 0:
+        return
+    recurse(n - 1)
+```
 
 ---
 
@@ -142,6 +182,25 @@ print(high)
 Demonstrates:
 - Algorithm pattern recognition
 - Semantic rule analysis
+- Deterministic Apply Fix
+
+## Apply Fix
+
+Click `Apply Fix` on the finding.
+
+Expected updated code:
+
+```python
+arr = [1, 2, 3]
+target = 2
+mid = 1
+high = 2
+
+if arr[mid] < target:
+    low = mid + 1
+
+print(high)
+```
 
 ---
 
@@ -256,11 +315,15 @@ Demonstrates:
 # Demo Order (Presentation)
 
 1. Undefined Variable
-2. Infinite Loop
-3. Missing Base Case
-4. Binary Search Logic Issue
-5. Syntax Error
-6. Semantic Graph Visualization
+2. Apply Fix for Undefined Variable
+3. Infinite Loop
+4. Apply Fix for Infinite Loop
+5. Missing Base Case
+6. Apply Fix for Missing Base Case
+7. Binary Search Logic Issue
+8. Apply Fix for Binary Search Logic Issue
+9. Syntax Error
+10. Semantic Graph Visualization
 
 ---
 
@@ -278,7 +341,8 @@ Demonstrates:
 - Built using Python AST.
 - Uses semantic extraction and symbol tables.
 - Rule engine operates on semantic information rather than raw source code.
-- Tested with 66 automated tests, fuzz testing, and regression testing.
+- Includes deterministic rule-based Apply Fix.
+- Tested with automated tests, fuzz testing, and regression testing.
 - Average analysis time: ~70 ms.
 - No HTTP 500 errors during testing.
 - Backend demo readiness score: 95%.

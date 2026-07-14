@@ -1,0 +1,801 @@
+{
+  "summary": {
+    "total_programs": 1000,
+    "overall_accuracy": 0.802,
+    "macro_precision": 0.953115,
+    "macro_recall": 0.861111,
+    "macro_f1": 0.866585,
+    "micro_precision": 0.902406,
+    "micro_recall": 0.84375,
+    "micro_f1": 0.872093
+  },
+  "rules": [
+    {
+      "rule": "UndefinedVariable",
+      "support": 100,
+      "tp": 100,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "rule": "InfiniteLoop",
+      "support": 100,
+      "tp": 25,
+      "fp": 0,
+      "fn": 75,
+      "precision": 1.0,
+      "recall": 0.25,
+      "f1": 0.4
+    },
+    {
+      "rule": "MissingBaseCase",
+      "support": 100,
+      "tp": 100,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "rule": "BinarySearchLogicError",
+      "support": 100,
+      "tp": 50,
+      "fp": 0,
+      "fn": 50,
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.666667
+    },
+    {
+      "rule": "UnreachableCode",
+      "support": 100,
+      "tp": 100,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "rule": "UnusedVariable",
+      "support": 100,
+      "tp": 100,
+      "fp": 73,
+      "fn": 0,
+      "precision": 0.578035,
+      "recall": 1.0,
+      "f1": 0.732601
+    },
+    {
+      "rule": "MissingReturn",
+      "support": 100,
+      "tp": 100,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "rule": "ShadowedVariable",
+      "support": 50,
+      "tp": 50,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "rule": "DangerousImport",
+      "support": 50,
+      "tp": 50,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  ],
+  "confusion_matrix": [
+    {
+      "expected": "BinarySearchLogicError",
+      "predicted": "BinarySearchLogicError",
+      "count": 50
+    },
+    {
+      "expected": "BinarySearchLogicError",
+      "predicted": "NoFinding",
+      "count": 50
+    },
+    {
+      "expected": "DangerousImport",
+      "predicted": "DangerousImport",
+      "count": 50
+    },
+    {
+      "expected": "InfiniteLoop",
+      "predicted": "InfiniteLoop",
+      "count": 25
+    },
+    {
+      "expected": "InfiniteLoop",
+      "predicted": "NoFinding",
+      "count": 75
+    },
+    {
+      "expected": "MissingBaseCase",
+      "predicted": "MissingBaseCase",
+      "count": 100
+    },
+    {
+      "expected": "MissingReturn",
+      "predicted": "MissingReturn",
+      "count": 100
+    },
+    {
+      "expected": "MissingReturn",
+      "predicted": "UnusedVariable",
+      "count": 33
+    },
+    {
+      "expected": "NoFinding",
+      "predicted": "NoFinding",
+      "count": 160
+    },
+    {
+      "expected": "NoFinding",
+      "predicted": "UnusedVariable",
+      "count": 40
+    },
+    {
+      "expected": "ShadowedVariable",
+      "predicted": "ShadowedVariable",
+      "count": 50
+    },
+    {
+      "expected": "UndefinedVariable",
+      "predicted": "UndefinedVariable",
+      "count": 100
+    },
+    {
+      "expected": "UnreachableCode",
+      "predicted": "UnreachableCode",
+      "count": 100
+    },
+    {
+      "expected": "UnusedVariable",
+      "predicted": "UnusedVariable",
+      "count": 100
+    }
+  ],
+  "false_positives": [
+    {
+      "id": 6,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 5-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 10,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 9-0",
+        "def build_result_9(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 16,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 15-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 20,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 19-0",
+        "def student_solution_19(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 26,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 25-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 30,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 29-0",
+        "def run_example_29(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 36,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 35-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 40,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 39-0",
+        "def count_items_39(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 46,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 45-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 50,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 49-0",
+        "def search_item_49(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 56,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 55-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 60,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 59-0",
+        "def search_item_59(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 66,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 65-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 70,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 69-0",
+        "def calculate_total_69(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 76,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 75-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 80,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 79-0",
+        "def search_item_79(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 86,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 85-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 90,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 89-0",
+        "def process_values_89(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 96,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 95-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 100,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 99-0",
+        "def count_items_99(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 106,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 105-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 110,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 109-0",
+        "def count_items_109(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 116,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 115-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    },
+    {
+      "id": 120,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct fibonacci case 119-0",
+        "def search_item_119(number):",
+        "    if number <= 1:",
+        "        return number",
+        "    first = 0",
+        "    second = 1",
+        "    for step in range(2, number + 1):",
+        "        first, second = second, first + second"
+      ]
+    },
+    {
+      "id": 126,
+      "category": "Correct Programs",
+      "rule": "UnusedVariable",
+      "code_preview": [
+        "# CodeLens benchmark: correct dictionary case 125-0",
+        "student = {'name': 'Asha', 'score': 88}",
+        "bonus = 5",
+        "student['score'] = student['score'] + bonus",
+        "print(student['score'])"
+      ]
+    }
+  ],
+  "false_negatives": [
+    {
+      "id": 301,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 0-0",
+        "counter_total_0 = 0",
+        "while True:",
+        "    print(counter_total_0)",
+        "    counter_total_0 += 1"
+      ]
+    },
+    {
+      "id": 302,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 1-0",
+        "counter_limit_1 = 5",
+        "while counter_limit_1 > 0:",
+        "    print(counter_limit_1)"
+      ]
+    },
+    {
+      "id": 303,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 2-0",
+        "counter_item_2 = 1",
+        "while counter_item_2 == counter_item_2:",
+        "    counter_item_2 += 1"
+      ]
+    },
+    {
+      "id": 305,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 4-0",
+        "counter_current_4 = 0",
+        "while True:",
+        "    print(counter_current_4)",
+        "    counter_current_4 += 1"
+      ]
+    },
+    {
+      "id": 306,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 5-0",
+        "counter_index_5 = 5",
+        "while counter_index_5 > 0:",
+        "    print(counter_index_5)"
+      ]
+    },
+    {
+      "id": 307,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 6-0",
+        "counter_score_6 = 1",
+        "while counter_score_6 == counter_score_6:",
+        "    counter_score_6 += 1"
+      ]
+    },
+    {
+      "id": 309,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 8-0",
+        "counter_current_8 = 0",
+        "while True:",
+        "    print(counter_current_8)",
+        "    counter_current_8 += 1"
+      ]
+    },
+    {
+      "id": 310,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 9-0",
+        "counter_current_9 = 5",
+        "while counter_current_9 > 0:",
+        "    print(counter_current_9)"
+      ]
+    },
+    {
+      "id": 311,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 10-0",
+        "counter_value_10 = 1",
+        "while counter_value_10 == counter_value_10:",
+        "    counter_value_10 += 1"
+      ]
+    },
+    {
+      "id": 313,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 12-0",
+        "counter_index_12 = 0",
+        "while True:",
+        "    print(counter_index_12)",
+        "    counter_index_12 += 1"
+      ]
+    },
+    {
+      "id": 314,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 13-0",
+        "counter_value_13 = 5",
+        "while counter_value_13 > 0:",
+        "    print(counter_value_13)"
+      ]
+    },
+    {
+      "id": 315,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 14-0",
+        "counter_result_14 = 1",
+        "while counter_result_14 == counter_result_14:",
+        "    counter_result_14 += 1"
+      ]
+    },
+    {
+      "id": 317,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 16-0",
+        "counter_answer_16 = 0",
+        "while True:",
+        "    print(counter_answer_16)",
+        "    counter_answer_16 += 1"
+      ]
+    },
+    {
+      "id": 318,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 17-0",
+        "counter_target_17 = 5",
+        "while counter_target_17 > 0:",
+        "    print(counter_target_17)"
+      ]
+    },
+    {
+      "id": 319,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 18-0",
+        "counter_total_18 = 1",
+        "while counter_total_18 == counter_total_18:",
+        "    counter_total_18 += 1"
+      ]
+    },
+    {
+      "id": 321,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 20-0",
+        "counter_score_20 = 0",
+        "while True:",
+        "    print(counter_score_20)",
+        "    counter_score_20 += 1"
+      ]
+    },
+    {
+      "id": 322,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 21-0",
+        "counter_target_21 = 5",
+        "while counter_target_21 > 0:",
+        "    print(counter_target_21)"
+      ]
+    },
+    {
+      "id": 323,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 22-0",
+        "counter_item_22 = 1",
+        "while counter_item_22 == counter_item_22:",
+        "    counter_item_22 += 1"
+      ]
+    },
+    {
+      "id": 325,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 24-0",
+        "counter_item_24 = 0",
+        "while True:",
+        "    print(counter_item_24)",
+        "    counter_item_24 += 1"
+      ]
+    },
+    {
+      "id": 326,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 25-0",
+        "counter_answer_25 = 5",
+        "while counter_answer_25 > 0:",
+        "    print(counter_answer_25)"
+      ]
+    },
+    {
+      "id": 327,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 26-0",
+        "counter_score_26 = 1",
+        "while counter_score_26 == counter_score_26:",
+        "    counter_score_26 += 1"
+      ]
+    },
+    {
+      "id": 329,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 28-0",
+        "counter_current_28 = 0",
+        "while True:",
+        "    print(counter_current_28)",
+        "    counter_current_28 += 1"
+      ]
+    },
+    {
+      "id": 330,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 29-0",
+        "counter_total_29 = 5",
+        "while counter_total_29 > 0:",
+        "    print(counter_total_29)"
+      ]
+    },
+    {
+      "id": 331,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 30-0",
+        "counter_answer_30 = 1",
+        "while counter_answer_30 == counter_answer_30:",
+        "    counter_answer_30 += 1"
+      ]
+    },
+    {
+      "id": 333,
+      "category": "Infinite Loop",
+      "rule": "InfiniteLoop",
+      "code_preview": [
+        "# CodeLens benchmark: infinite loop case 32-0",
+        "counter_current_32 = 0",
+        "while True:",
+        "    print(counter_current_32)",
+        "    counter_current_32 += 1"
+      ]
+    }
+  ],
+  "status": "complete"
+}

@@ -1,5 +1,6 @@
 from app.schemas.analysis import AnalyzeRequest, AnalyzeResponse
 from app.schemas.common import SemanticGraph
+from app.fixes.engine import FixEngine
 from app.parser.ast_builder import ASTBuilder
 from app.metrics.complexity_engine import ComplexityContext, ComplexityEngine
 from app.rules.engine import RuleEngine
@@ -17,6 +18,7 @@ class AnalysisService:
             errors.insert(0, parse_result.error)
 
         findings = RuleEngine().run(semantic) if tree is not None else []
+        findings = FixEngine().with_code_actions(request.code, findings)
         metrics = ComplexityEngine().calculate(
             ComplexityContext(
                 tree=tree,

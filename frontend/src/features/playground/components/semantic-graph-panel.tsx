@@ -1,7 +1,16 @@
 "use client";
 
-import { useMemo } from "react";
-import ReactFlow, { Background, Controls, type Edge, type Node } from "reactflow";
+import { useEffect, useMemo } from "react";
+import ReactFlow, {
+  Background,
+  Controls,
+  MarkerType,
+  Position,
+  ReactFlowProvider,
+  useReactFlow,
+  type Edge,
+  type Node
+} from "reactflow";
 
 import { PanelShell } from "@/features/playground/components/panel-shell";
 import type { SemanticGraph } from "@/lib/api/contracts";
@@ -20,12 +29,12 @@ const nodeClassByType: Record<string, string> = {
 };
 
 function graphNodePosition(index: number) {
-  const column = index % 3;
-  const row = Math.floor(index / 3);
+  const column = index % 4;
+  const row = Math.floor(index / 4);
 
   return {
-    x: 40 + column * 190,
-    y: 36 + row * 118
+    x: 56 + column * 230,
+    y: 48 + row * 140
   };
 }
 
@@ -46,6 +55,8 @@ export function SemanticGraphPanel({
         id: node.id,
         data: { label: node.label },
         position: graphNodePosition(index),
+        sourcePosition: Position.Bottom,
+        targetPosition: Position.Top,
         type: "default",
         className: nodeClassByType[node.type] ?? "semantic-node"
       })),
@@ -60,8 +71,18 @@ export function SemanticGraphPanel({
         target: edge.target,
         label: edge.label,
         animated: edge.label === "modifies" || edge.label === "depends_on",
+        type: "smoothstep",
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: edge.label === "modifies" ? "#06B6D4" : "#7C3AED",
+          width: 14,
+          height: 14
+        },
+        labelBgPadding: [8, 4],
+        labelBgBorderRadius: 8,
         style: {
-          stroke: edge.label === "modifies" ? "#06B6D4" : "#7C3AED"
+          stroke: edge.label === "modifies" ? "#06B6D4" : "#7C3AED",
+          strokeWidth: 1.6
         }
       })),
     [graphForDisplay.edges]
@@ -91,17 +112,7 @@ export function SemanticGraphPanel({
           </div>
         </div>
       ) : (
-        <ReactFlow
-          edges={edges}
-          fitView
-          fitViewOptions={{ padding: 0.28 }}
-          nodes={nodes}
-          nodesDraggable
-          panOnScroll
-        >
-          <Background color="rgba(255,255,255,0.08)" gap={18} />
-          <Controls position="top-right" showInteractive={false} />
-        </ReactFlow>
+        <GraphCanvas edges={edges} nodes={nodes} />
       )}
       <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap gap-2 text-[10px] text-slate-400">
         <span className="rounded-full border border-white/[0.08] bg-background/80 px-2 py-1">
@@ -112,5 +123,46 @@ export function SemanticGraphPanel({
         </span>
       </div>
     </PanelShell>
+  );
+}
+
+function GraphCanvas({ edges, nodes }: { edges: Edge[]; nodes: Node[] }) {
+  return (
+    <ReactFlowProvider>
+      <GraphCanvasInner edges={edges} nodes={nodes} />
+    </ReactFlowProvider>
+  );
+}
+
+function GraphCanvasInner({ edges, nodes }: { edges: Edge[]; nodes: Node[] }) {
+  const { fitView } = useReactFlow();
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      void fitView({ duration: 260, padding: 0.24 });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [edges.length, fitView, nodes.length]);
+
+  return (
+    <ReactFlow
+      edges={edges}
+      fitView
+      fitViewOptions={{ padding: 0.24 }}
+      maxZoom={1.35}
+      minZoom={0.35}
+      nodes={nodes}
+      nodesDraggable={false}
+      panOnDrag
+      panOnScroll
+      proOptions={{ hideAttribution: true }}
+      zoomOnDoubleClick={false}
+      zoomOnPinch
+      zoomOnScroll
+    >
+      <Background color="rgba(255,255,255,0.08)" gap={20} />
+      <Controls position="top-right" showInteractive={false} />
+    </ReactFlow>
   );
 }

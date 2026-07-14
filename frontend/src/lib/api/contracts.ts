@@ -19,18 +19,14 @@ export type SemanticGraphNodeType =
   | "condition"
   | "return";
 
-export interface SourceRange {
+export interface CodeAction {
+  title: string;
+  description: string;
+  replacement: string;
   startLine: number;
   startColumn: number;
   endLine: number;
   endColumn: number;
-}
-
-export interface CodeAction {
-  title: string;
-  description: string;
-  range: SourceRange;
-  replacement: string;
 }
 
 export interface AnalysisError {
@@ -95,10 +91,26 @@ export interface AnalyzeResponse {
 export interface ExplainRequest {
   code: string;
   findingId: string;
+  finding?: Finding;
+  error?: AnalysisError;
+  metrics?: Metrics;
+  runtimeSummary?: {
+    steps: number;
+    output: string[];
+    finalVariables: Record<string, string>;
+  };
 }
 
 export interface ExplainResponse {
+  summary: string;
+  rootCause: string;
   explanation: string;
+  howToFix: string;
+  correctedExample: string;
+  learningTip: string;
+  bestPractice: string;
+  confidence: number;
+  unavailable: boolean;
 }
 
 export interface ApplyFixRequest {
@@ -109,6 +121,7 @@ export interface ApplyFixRequest {
 export interface ApplyFixResponse {
   updatedCode: string;
   applied: boolean;
+  message: string;
 }
 
 export interface RuntimeRequest {
@@ -116,21 +129,26 @@ export interface RuntimeRequest {
 }
 
 export interface RuntimeStep {
-  step: number;
+  stepNumber: number;
   line?: number | null;
-  statement: string;
+  executedStatement: string;
+  changedVariable?: string | null;
+  variables: Record<string, string>;
+  output: string[];
 }
 
-export interface RuntimeVariable {
-  name: string;
-  value: string;
-  step: number;
+export interface RuntimeError {
+  type: string;
+  message: string;
+  line?: number | null;
+  column?: number | null;
 }
 
 export interface RuntimeResponse {
+  success: boolean;
   steps: RuntimeStep[];
-  variables: RuntimeVariable[];
-  callStack: string[];
+  output: string[];
+  error: RuntimeError | null;
 }
 
 export interface MetricsRequest {

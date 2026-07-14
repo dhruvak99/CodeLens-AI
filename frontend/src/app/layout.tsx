@@ -27,8 +27,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable}`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(()=>{try{const t=localStorage.getItem('codelens-theme')||'dark';document.documentElement.classList.toggle('light',t==='light');document.documentElement.classList.toggle('dark',t!=='light');document.documentElement.style.colorScheme=t==='light'?'light':'dark'}catch{}})();"
+          }}
+        />
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.api import (
@@ -8,12 +11,14 @@ from app.api import (
     runtime_router,
 )
 
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
 app = FastAPI(
     title="CodeLens AI API",
     description=(
-        "Contract-first API skeleton for CodeLens AI. Endpoints return mock "
-        "responses only; semantic analysis, runtime execution, AI explanation, "
-        "fix application, and persistence are not implemented yet."
+        "CodeLens AI backend for semantic analysis, code fixes, runtime tracing, "
+        "and complexity metrics. Runtime tracing safely interprets a restricted "
+        "Python AST subset for visualization and education."
     ),
     version="0.1.0",
 )

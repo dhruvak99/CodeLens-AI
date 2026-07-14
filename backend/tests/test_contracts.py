@@ -49,7 +49,10 @@ def test_explain_contract() -> None:
         ExplainRequest(code="x = 1", findingId="finding_001")
     ).model_dump(by_alias=True)
 
-    assert "explanation" in response
+    assert response["summary"] == "AI explanation unavailable."
+    assert response["explanation"] == "AI explanation unavailable."
+    assert response["unavailable"] is True
+    assert response["confidence"] == 0.0
 
 
 def test_apply_fix_contract_does_not_change_code_yet() -> None:
@@ -57,7 +60,11 @@ def test_apply_fix_contract_does_not_change_code_yet() -> None:
         ApplyFixRequest(code="x = 1", findingId="finding_001")
     ).model_dump(by_alias=True)
 
-    assert response == {"updatedCode": "x = 1", "applied": False}
+    assert response == {
+        "updatedCode": "x = 1",
+        "applied": False,
+        "message": "No automatic fix available",
+    }
 
 
 def test_runtime_contract() -> None:
@@ -65,9 +72,11 @@ def test_runtime_contract() -> None:
         RuntimeRequest(code="x = 1")
     ).model_dump(by_alias=True)
 
-    assert response["steps"] == []
-    assert response["variables"] == []
-    assert response["callStack"] == []
+    assert response["success"] is True
+    assert response["steps"][0]["stepNumber"] == 1
+    assert response["steps"][0]["variables"] == {"x": "1"}
+    assert response["output"] == []
+    assert response["error"] is None
 
 
 def test_metrics_contract() -> None:

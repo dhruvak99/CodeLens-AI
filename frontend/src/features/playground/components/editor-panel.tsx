@@ -14,6 +14,7 @@ type EditorPanelProps = {
     line: number;
     nonce: number;
   } | null;
+  runtimeLine: number | null;
 };
 
 const configureMonaco: BeforeMount = (monaco) => {
@@ -40,11 +41,13 @@ export function EditorPanel({
   code,
   onCodeChange,
   isAnalyzing,
-  focusTarget
+  focusTarget,
+  runtimeLine
 }: EditorPanelProps) {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const monacoRef = useRef<Parameters<OnMount>[1] | null>(null);
   const decorationsRef = useRef<string[]>([]);
+  const runtimeDecorationsRef = useRef<string[]>([]);
 
   const handleMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -78,6 +81,46 @@ export function EditorPanel({
       }
     ]);
   }, [focusTarget]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    const monaco = monacoRef.current;
+
+    if (!editor || !monaco) {
+      return;
+    }
+
+    if (!runtimeLine) {
+      runtimeDecorationsRef.current = editor.deltaDecorations(
+        runtimeDecorationsRef.current,
+        []
+      );
+      return;
+    }
+
+    const line = Math.max(1, runtimeLine);
+
+    editor.revealLineInCenterIfOutsideViewport(
+      line,
+      monaco.editor.ScrollType.Smooth
+    );
+    runtimeDecorationsRef.current = editor.deltaDecorations(
+      runtimeDecorationsRef.current,
+      [
+        {
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            isWholeLine: true,
+            className: "codelens-runtime-line-highlight",
+            overviewRuler: {
+              color: "#06B6D4",
+              position: monaco.editor.OverviewRulerLane.Right
+            }
+          }
+        }
+      ]
+    );
+  }, [runtimeLine]);
 
   return (
     <PanelShell

@@ -6,16 +6,15 @@ from app.schemas.common import (
     SemanticGraph,
     SemanticGraphEdge,
     SemanticGraphNode,
-    SourceRange,
 )
-from app.schemas.explain import ExplainRequest, ExplainResponse
+from app.schemas.explain import ExplainRequest, ExplainResponse, RuntimeSummaryRequest
 from app.schemas.fix import ApplyFixRequest, ApplyFixResponse
 from app.schemas.metrics import MetricsRequest, MetricsResponse
 from app.schemas.runtime import (
+    RuntimeError,
     RuntimeRequest,
     RuntimeResponse,
     RuntimeStep,
-    RuntimeVariable,
 )
 
 __all__ = [
@@ -32,10 +31,10 @@ __all__ = [
     "MetricsResponse",
     "RuntimeRequest",
     "RuntimeResponse",
+    "RuntimeError",
+    "RuntimeSummaryRequest",
     "RuntimeStep",
-    "RuntimeVariable",
     "SemanticGraph",
     "SemanticGraphEdge",
     "SemanticGraphNode",
-    "SourceRange",
 ]

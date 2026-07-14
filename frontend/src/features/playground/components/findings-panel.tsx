@@ -4,7 +4,6 @@ import {
   AlertCircle,
   Bug,
   CheckCircle2,
-  Lightbulb,
   Sparkles,
   Wand2
 } from "lucide-react";
@@ -29,7 +28,12 @@ const severityLabel: Record<FindingSeverity, string> = {
 type FindingsPanelProps = {
   findings: Finding[];
   errors: AnalysisError[];
+  applyingFindingId: string | null;
+  explainingId: string | null;
   isAnalyzing: boolean;
+  onApplyFix: (finding: Finding) => void;
+  onExplainError: (error: AnalysisError, index: number) => void;
+  onExplainFinding: (finding: Finding) => void;
   onFindingClick: (finding: Finding) => void;
 };
 
@@ -41,9 +45,14 @@ function formatFindingType(type: string) {
 }
 
 export function FindingsPanel({
+  applyingFindingId,
+  explainingId,
   findings,
   errors,
   isAnalyzing,
+  onApplyFix,
+  onExplainError,
+  onExplainFinding,
   onFindingClick
 }: FindingsPanelProps) {
   const issueCount = findings.length + errors.length;
@@ -110,6 +119,19 @@ export function FindingsPanel({
                     </span>
                   </div>
                   <p className="text-sm leading-6 text-red-100">{error.message}</p>
+                  <div className="mt-4">
+                    <Button
+                      disabled={explainingId === `syntax-${index}`}
+                      onClick={() => onExplainError(error, index)}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      <Sparkles className="size-4" />
+                      {explainingId === `syntax-${index}`
+                        ? "Explaining..."
+                        : "Explain"}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </article>
@@ -158,17 +180,29 @@ export function FindingsPanel({
                 {finding.rule}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Button disabled size="sm" variant="secondary">
+                <Button
+                  disabled={explainingId === finding.id}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onExplainFinding(finding);
+                  }}
+                  size="sm"
+                  variant="secondary"
+                >
                   <Sparkles className="size-4" />
-                  Explain
+                  {explainingId === finding.id ? "Explaining..." : "Explain"}
                 </Button>
-                <Button disabled size="sm" variant="secondary">
-                  <Lightbulb className="size-4" />
-                  Suggested Fix
-                </Button>
-                <Button disabled size="sm" variant="secondary">
+                <Button
+                  disabled={!finding.codeAction || applyingFindingId === finding.id}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onApplyFix(finding);
+                  }}
+                  size="sm"
+                  variant={finding.codeAction ? "default" : "secondary"}
+                >
                   <Wand2 className="size-4" />
-                  Apply Fix
+                  {applyingFindingId === finding.id ? "Applying..." : "Apply Fix"}
                 </Button>
               </div>
             </article>

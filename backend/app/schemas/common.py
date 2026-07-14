@@ -8,9 +8,12 @@ Severity = Literal["low", "medium", "high"]
 FindingType = Literal[
     "binary_search_logic_issue",
     "dead_code",
+    "dangerous_import",
     "infinite_loop_risk",
     "missing_base_case",
+    "missing_return",
     "missing_type_hints",
+    "shadowed_variable",
     "undefined_variable",
     "unreachable_code",
     "unnecessary_else",
@@ -21,18 +24,14 @@ GraphNodeType = Literal[
 ]
 
 
-class SourceRange(BaseModel):
+class CodeAction(BaseModel):
+    title: str
+    description: str
+    replacement: str
     start_line: int = Field(..., alias="startLine", ge=1)
     start_column: int = Field(..., alias="startColumn", ge=1)
     end_line: int = Field(..., alias="endLine", ge=1)
     end_column: int = Field(..., alias="endColumn", ge=1)
-
-
-class CodeAction(BaseModel):
-    title: str
-    description: str
-    range: SourceRange
-    replacement: str
 
 
 class Finding(BaseModel):
