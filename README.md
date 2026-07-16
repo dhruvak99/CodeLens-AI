@@ -71,6 +71,7 @@ CodeLens-AI/
 ├── sql_backend/      # SQL Lab API, SQL generation, validation, tutoring
 ├── frontend/         # Next.js application
 ├── setup.sh          # One-time local setup helper
+├── cleanup.sh        # Optional helper for freeing occupied local ports
 ├── run.sh            # Starts local development services
 ├── stop.sh           # Stops services started by run.sh
 ├── status.sh         # Shows local service status
@@ -83,7 +84,7 @@ CodeLens-AI/
 git clone https://github.com/dhruvak99/CodeLens-AI.git
 cd CodeLens-AI
 
-chmod +x setup.sh run.sh stop.sh status.sh
+chmod +x setup.sh cleanup.sh run.sh stop.sh status.sh
 
 ./setup.sh
 ```
@@ -97,8 +98,11 @@ ollama serve
 Run the application:
 
 ```bash
+./cleanup.sh      # Optional, frees occupied CodeLens AI ports
 ./run.sh
 ```
+
+Use `cleanup.sh` only when ports `3000`, `8000`, or `8001` are already occupied by stale CodeLens AI processes.
 
 Stop the application:
 
